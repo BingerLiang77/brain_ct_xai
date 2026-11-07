@@ -1,0 +1,119 @@
+35 cases (35 positive); methods ['IG_zero', 'IG_u', 'IG_bl', 'IG_neg']; ranks ['max', 'mean']; replacements ['zero', 'const', 'blur', 'negmean']; grid [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100]
+mean original logit +1.048 (median +0.551); fully replaced (all eligible blocks): zero +1.77, const -1.56, blur +2.15, negmean -1.38
+
+=== AREA under the logit curve (mean logit along 0-100 %; deletion: LOWER = removing the top blocks hurts more = better; insertion: HIGHER = better) ===
+diff = area(method) - area(random), paired over cases; p = paired Wilcoxon, UNADJUSTED.  Random curves are NOT flat: replacement volumes are not neutral.
+
+-- deletion, rank = max, replacement = zero   (random area +2.605)
+   IG_zero  n= 35 area -0.979 [-1.343, -0.580]   diff vs random -3.584  p = 5.82e-11
+   IG_u     n= 35 area -1.552 [-1.920, -1.185]   diff vs random -4.157  p = 5.82e-11
+   IG_bl    n= 35 area -0.179 [-0.606, +0.230]   diff vs random -2.784  p = 5.82e-11
+   IG_neg   n= 35 area -0.442 [-0.771, -0.064]   diff vs random -3.047  p = 5.82e-11
+
+-- deletion, rank = max, replacement = const   (random area +3.002)
+   IG_zero  n= 35 area +2.343 [+1.724, +2.959]   diff vs random -0.659  p = 1.11e-06
+   IG_u     n= 35 area +1.907 [+1.329, +2.480]   diff vs random -1.095  p = 1.2e-08
+   IG_bl    n= 35 area +2.191 [+1.600, +2.787]   diff vs random -0.811  p = 9.74e-07
+   IG_neg   n= 35 area +2.080 [+1.489, +2.675]   diff vs random -0.922  p = 1.25e-06
+
+-- deletion, rank = max, replacement = blur   (random area +1.529)
+   IG_zero  n= 35 area +1.770 [+0.884, +2.639]   diff vs random +0.241  p = 0.000513
+   IG_u     n= 35 area +1.818 [+0.975, +2.664]   diff vs random +0.289  p = 6.51e-05
+   IG_bl    n= 35 area +1.234 [+0.393, +2.081]   diff vs random -0.295  p = 0.000177
+   IG_neg   n= 35 area +1.512 [+0.665, +2.371]   diff vs random -0.017  p = 0.728
+
+-- deletion, rank = max, replacement = negmean   (random area +1.573)
+   IG_zero  n= 35 area +1.324 [+0.678, +1.949]   diff vs random -0.249  p = 0.0356
+   IG_u     n= 35 area +1.193 [+0.598, +1.786]   diff vs random -0.380  p = 0.00427
+   IG_bl    n= 35 area +0.925 [+0.308, +1.528]   diff vs random -0.648  p = 1.61e-05
+   IG_neg   n= 35 area +0.541 [-0.062, +1.156]   diff vs random -1.032  p = 3.73e-08
+
+-- deletion, rank = mean, replacement = zero   (random area +2.605)
+   IG_zero  n= 35 area +2.303 [+1.992, +2.657]   diff vs random -0.302  p = 0.0124
+   IG_u     n= 35 area +2.970 [+2.605, +3.347]   diff vs random +0.365  p = 0.00665
+   IG_bl    n= 35 area +2.265 [+1.944, +2.588]   diff vs random -0.340  p = 0.0275
+   IG_neg   n= 35 area +2.583 [+2.145, +3.018]   diff vs random -0.023  p = 0.916
+
+-- deletion, rank = mean, replacement = const   (random area +3.002)
+   IG_zero  n= 35 area +4.131 [+3.528, +4.733]   diff vs random +1.129  p = 1.75e-10
+   IG_u     n= 35 area +1.611 [+1.098, +2.184]   diff vs random -1.391  p = 8.15e-10
+   IG_bl    n= 35 area +1.037 [+0.507, +1.543]   diff vs random -1.964  p = 5.82e-11
+   IG_neg   n= 35 area +1.485 [+0.891, +2.067]   diff vs random -1.517  p = 5.82e-11
+
+-- deletion, rank = mean, replacement = blur   (random area +1.529)
+   IG_zero  n= 35 area +1.598 [+0.705, +2.493]   diff vs random +0.070  p = 0.302
+   IG_u     n= 35 area +0.891 [-0.001, +1.795]   diff vs random -0.638  p = 2.91e-10
+   IG_bl    n= 35 area -1.936 [-2.789, -1.052]   diff vs random -3.465  p = 5.82e-11
+   IG_neg   n= 35 area -0.236 [-1.127, +0.680]   diff vs random -1.764  p = 5.82e-11
+
+-- deletion, rank = mean, replacement = negmean   (random area +1.573)
+   IG_zero  n= 35 area +1.916 [+1.205, +2.596]   diff vs random +0.343  p = 0.0341
+   IG_u     n= 35 area +0.744 [+0.037, +1.461]   diff vs random -0.830  p = 1.87e-07
+   IG_bl    n= 35 area -1.177 [-1.896, -0.448]   diff vs random -2.750  p = 5.82e-11
+   IG_neg   n= 35 area -1.854 [-2.550, -1.159]   diff vs random -3.427  p = 5.82e-11
+
+-- insertion, rank = max, replacement = zero   (random area +2.660)
+   IG_zero  n= 35 area +3.754 [+3.186, +4.309]   diff vs random +1.095  p = 8.63e-08
+   IG_u     n= 35 area +4.176 [+3.610, +4.777]   diff vs random +1.517  p = 2.5e-09
+   IG_bl    n= 35 area +4.446 [+3.924, +4.966]   diff vs random +1.786  p = 5.82e-11
+   IG_neg   n= 35 area +4.469 [+3.948, +5.012]   diff vs random +1.809  p = 5.82e-11
+
+-- insertion, rank = max, replacement = const   (random area +3.108)
+   IG_zero  n= 35 area +1.097 [+0.409, +1.801]   diff vs random -2.010  p = 5.82e-11
+   IG_u     n= 35 area +1.257 [+0.530, +2.013]   diff vs random -1.850  p = 1.16e-10
+   IG_bl    n= 35 area +2.259 [+1.538, +2.998]   diff vs random -0.848  p = 1.45e-05
+   IG_neg   n= 35 area +1.891 [+1.190, +2.628]   diff vs random -1.217  p = 8.63e-08
+
+-- insertion, rank = max, replacement = blur   (random area +1.543)
+   IG_zero  n= 35 area +1.377 [+0.499, +2.297]   diff vs random -0.166  p = 0.00597
+   IG_u     n= 35 area +1.350 [+0.447, +2.289]   diff vs random -0.193  p = 0.00338
+   IG_bl    n= 35 area +1.851 [+0.931, +2.780]   diff vs random +0.309  p = 6.34e-06
+   IG_neg   n= 35 area +1.569 [+0.683, +2.483]   diff vs random +0.026  p = 0.451
+
+-- insertion, rank = max, replacement = negmean   (random area +1.670)
+   IG_zero  n= 35 area +0.574 [-0.173, +1.368]   diff vs random -1.096  p = 6.22e-08
+   IG_u     n= 35 area +0.465 [-0.289, +1.269]   diff vs random -1.205  p = 1.92e-09
+   IG_bl    n= 35 area +1.317 [+0.505, +2.191]   diff vs random -0.353  p = 0.0356
+   IG_neg   n= 35 area +1.408 [+0.552, +2.308]   diff vs random -0.262  p = 0.144
+
+-- insertion, rank = mean, replacement = zero   (random area +2.660)
+   IG_zero  n= 35 area +3.339 [+3.007, +3.684]   diff vs random +0.679  p = 1.87e-07
+   IG_u     n= 35 area +2.797 [+2.456, +3.174]   diff vs random +0.137  p = 0.131
+   IG_bl    n= 35 area +3.029 [+2.616, +3.481]   diff vs random +0.370  p = 0.0118
+   IG_neg   n= 35 area +3.139 [+2.693, +3.606]   diff vs random +0.480  p = 0.00134
+
+-- insertion, rank = mean, replacement = const   (random area +3.108)
+   IG_zero  n= 35 area +2.801 [+2.215, +3.434]   diff vs random -0.307  p = 0.0144
+   IG_u     n= 35 area +5.115 [+4.526, +5.735]   diff vs random +2.007  p = 5.82e-11
+   IG_bl    n= 35 area +4.549 [+3.930, +5.176]   diff vs random +1.441  p = 1.16e-10
+   IG_neg   n= 35 area +4.857 [+4.215, +5.497]   diff vs random +1.749  p = 5.82e-11
+
+-- insertion, rank = mean, replacement = blur   (random area +1.543)
+   IG_zero  n= 35 area +1.438 [+0.551, +2.344]   diff vs random -0.104  p = 0.0934
+   IG_u     n= 35 area +2.046 [+1.137, +2.964]   diff vs random +0.503  p = 5.12e-09
+   IG_bl    n= 35 area +4.881 [+3.985, +5.769]   diff vs random +3.338  p = 5.82e-11
+   IG_neg   n= 35 area +3.192 [+2.328, +4.047]   diff vs random +1.649  p = 5.82e-11
+
+-- insertion, rank = mean, replacement = negmean   (random area +1.670)
+   IG_zero  n= 35 area +1.860 [+1.045, +2.719]   diff vs random +0.190  p = 0.168
+   IG_u     n= 35 area +2.768 [+2.010, +3.535]   diff vs random +1.098  p = 3.2e-09
+   IG_bl    n= 35 area +3.959 [+3.263, +4.660]   diff vs random +2.289  p = 5.82e-11
+   IG_neg   n= 35 area +5.339 [+4.569, +6.097]   diff vs random +3.669  p = 5.82e-11
+
+=== IG baselines compared on the AREA (paired, Friedman over the methods present) ===
+   deletion  rank max  repl zero     Friedman p = 1.96e-12
+   deletion  rank max  repl const    Friedman p = 0.0633
+   deletion  rank max  repl blur     Friedman p = 2.27e-13
+   deletion  rank max  repl negmean  Friedman p = 7.27e-09
+   deletion  rank mean repl zero     Friedman p = 0.000722
+   deletion  rank mean repl const    Friedman p = 1.1e-14
+   deletion  rank mean repl blur     Friedman p = 1.67e-21
+   deletion  rank mean repl negmean  Friedman p = 2.13e-20
+   insertion rank max  repl zero     Friedman p = 7.65e-07
+   insertion rank max  repl const    Friedman p = 1.19e-13
+   insertion rank max  repl blur     Friedman p = 2.44e-12
+   insertion rank max  repl negmean  Friedman p = 2.66e-12
+   insertion rank mean repl zero     Friedman p = 0.000734
+   insertion rank mean repl const    Friedman p = 7.35e-15
+   insertion rank mean repl blur     Friedman p = 1.67e-21
+   insertion rank mean repl negmean  Friedman p = 2.65e-20

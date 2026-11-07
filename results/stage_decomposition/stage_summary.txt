@@ -1,0 +1,28 @@
+55 cases (35 positive, 20 negative); decomposition reproduces the model logit to < 1e-3 on every case.
+logit = bias (-1.552) + sum of the five stage contributions.  Contributions are relative to the average training case (they can be negative).
+
+=== Stage contributions to the logit (mean / SD; positives vs negatives) ===
+stage   all mean  pos mean  neg mean   pos-neg  SD (all)  mean |c|
+c0         0.088     0.135     0.007     0.128     0.266     0.231
+c1         0.130     0.275    -0.123     0.398     0.548     0.446
+c2         0.257     0.531    -0.223     0.755     0.716     0.559
+c3         0.250     0.734    -0.598     1.333     1.259     0.993
+c4         0.587     0.924    -0.003     0.926     1.441     1.241
+c012       0.476     0.941    -0.339     1.280     1.212     1.001
+c34        0.836     1.658    -0.601     2.259     2.295     1.850
+
+=== Share of the positive-vs-negative separation (mean logit difference) carried by each stage ===
+   c0:   3.6 %  c1:  11.2 %  c2:  21.3 %  c3:  37.7 %  c4:  26.2 %     [total separation 3.54 logit]
+   stages 0-2 together: 36.2 %;  stages 3-4 together: 63.8 %
+
+=== What a Grad-CAM can see ===
+Grad-CAM stage 3 (sees c3 + c4)
+   missed part: median |missed| = 0.781 logit;  median share of sum|c_s| = 27.8 %
+   case-to-case: corr(visible part, logit - bias) = 0.938  (R^2 = 0.880); visible part alone explains 88 % of the variation of the logit across cases
+   positives only: median |missed| = 0.834, median |visible| = 1.511
+Grad-CAM stage 4 (sees c4 only)
+   missed part: median |missed| = 1.301 logit;  median share of sum|c_s| = 42.5 %
+   case-to-case: corr(visible part, logit - bias) = 0.768  (R^2 = 0.590); visible part alone explains 59 % of the variation of the logit across cases
+   positives only: median |missed| = 1.676, median |visible| = 1.024
+
+Reading: if stages 0-2 carry little of the separation and the visible part tracks the logit (R^2 close to 1), a stage-3 Grad-CAM explains nearly the whole decision; if not, say in the report that Grad-CAM explains the stage 3-4 part only (IG covers everything).

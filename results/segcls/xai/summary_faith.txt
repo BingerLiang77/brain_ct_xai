@@ -1,0 +1,64 @@
+=== DELETION on the case score S (dS = S(replaced) - S(original); mean over positives). M: highest-scoring blocks first; L: lowest first; pM/pL: same with the population prior; random: mean of 3 draws ===
+mean S0 over cases: 4.60
+
+-- replacement: blur.   columns = replaced fraction of eligible blocks; auc = mean over the 4 fractions
+frac        0.1    0.2    0.3    0.5    auc
+random    0.015 -0.027 -0.027 -0.073 -0.028
+GC3|M    -0.122 -0.118 -0.060  0.075 -0.056
+GC3|L     0.079  0.076 -0.007  0.157  0.076
+GC3|pM   -0.035 -0.126 -0.172 -0.013 -0.086
+GC3|pL   -0.047 -0.026 -0.043  0.079 -0.009
+GC4|M    -0.068 -0.038  0.046  0.045 -0.004
+GC4|L    -0.164 -0.144 -0.108 -0.120 -0.134
+GC4|pM    0.147  0.332  0.362  0.228  0.267
+GC4|pL   -0.063 -0.066 -0.025  0.093 -0.015
+IG_u|M   -0.404 -0.719 -0.955 -1.166 -0.811
+IG_u|L    0.468  0.724  0.921  1.051  0.791
+IG_u|pM   0.106  0.057 -0.110 -0.239 -0.046
+IG_u|pL   0.026  0.106  0.041  0.021  0.049
+IG_bl|M  -1.616 -2.097 -2.334 -2.419 -2.117
+IG_bl|L   1.854  2.489  2.839  3.141  2.581
+IG_bl|pM -0.251 -0.410 -0.431 -0.560 -0.413
+IG_bl|pL  0.104  0.395  0.428  0.537  0.366
+SEGP|M   -0.042 -0.054 -0.070  0.056 -0.027
+SEGP|L    0.046  0.107  0.132  0.109  0.098
+SEGP|pM   0.072 -0.006 -0.073 -0.023 -0.007
+SEGP|pL   0.009  0.059  0.060  0.095  0.056
+   gap = AUC(L) - AUC(M);  gap gain = gap - prior gap (pL - pM);  p = paired Wilcoxon of the gain over cases
+   GC3    gap +0.132  prior gap +0.077  gain +0.055  p = 0.865   M vs random -0.028
+   GC4    gap -0.131  prior gap -0.283  gain +0.152  p = 0.326   M vs random +0.025
+   IG_u   gap +1.602  prior gap +0.095  gain +1.506  p = 1.2e-08   M vs random -0.783
+   IG_bl  gap +4.697  prior gap +0.779  gain +3.919  p = 5.82e-11   M vs random -2.088
+   SEGP   gap +0.126  prior gap +0.063  gain +0.063  p = 0.692   M vs random +0.001
+
+-- replacement: uniform.   columns = replaced fraction of eligible blocks; auc = mean over the 4 fractions
+frac        0.1    0.2    0.3    0.5    auc
+random    0.728  0.977  0.975  0.698  0.845
+GC3|M     0.205  0.595  0.838  0.387  0.506
+GC3|L     0.689  0.817  0.571  0.534  0.653
+GC3|pM   -0.099 -0.197 -0.262 -0.462 -0.255
+GC3|pL    0.009  0.308  0.459 -0.257  0.130
+GC4|M     0.018  0.528  0.791  0.332  0.417
+GC4|L    -0.091 -0.121 -0.088 -0.080 -0.095
+GC4|pM   -0.070 -0.084 -0.194 -0.689 -0.259
+GC4|pL   -0.095 -0.134  0.012  0.095 -0.031
+IG_u|M   -0.051 -0.364 -0.535 -1.139 -0.522
+IG_u|L    2.071  2.248  2.541  2.487  2.337
+IG_u|pM   0.823  0.972  0.661  0.614  0.767
+IG_u|pL   0.840  1.305  1.081  0.910  1.034
+IG_bl|M  -0.398 -0.543 -0.341 -0.279 -0.390
+IG_bl|L   1.724  2.008  1.988  1.863  1.896
+IG_bl|pM  0.004  0.236  0.235  0.020  0.124
+IG_bl|pL  0.575  0.801  0.450  0.011  0.459
+SEGP|M    0.147  0.043 -0.177 -0.423 -0.102
+SEGP|L    0.593  0.723  0.658  0.460  0.609
+SEGP|pM   0.179  0.543  0.969  0.636  0.582
+SEGP|pL   0.701  0.912  1.332  0.904  0.962
+   gap = AUC(L) - AUC(M);  gap gain = gap - prior gap (pL - pM);  p = paired Wilcoxon of the gain over cases
+   GC3    gap +0.146  prior gap +0.385  gain -0.239  p = 0.512   M vs random -0.338
+   GC4    gap -0.512  prior gap +0.229  gain -0.740  p = 0.0287   M vs random -0.428
+   IG_u   gap +2.859  prior gap +0.266  gain +2.593  p = 1.46e-09   M vs random -1.367
+   IG_bl  gap +2.286  prior gap +0.336  gain +1.950  p = 1.81e-06   M vs random -1.235
+   SEGP   gap +0.711  prior gap +0.380  gain +0.331  p = 0.544   M vs random -0.947
+
+Note: dS is in units of the segmentation-classifier score, not the old logit; compare signs and gains over the prior, not raw magnitudes. IG_u is matched with the uniform replacement and IG_bl with the blur replacement (partly true by IG completeness).

@@ -1,0 +1,148 @@
+35 positives with lesion inside the head; excluded (empty lesion-in-head): 0  []
+lesion fraction inside head: median 0.996; < 0.9: 3; < 0.5: 1  (lesion := lesion AND head throughout)
+methods found: ['GC3', 'GC4', 'IG_zero', 'IG_u', 'IG_bl', 'IG_neg']
+
+IG completeness (relative error |sum - (logit - base)| / |logit - base|, median over cases):
+method
+IG_bl      0.007
+IG_neg     0.007
+IG_u       0.079
+IG_zero    0.014
+
+=== LOCALIZATION, positives (mean [bootstrap 95 % CI], median). chance = analytic; prior = the method's own leave-one-out population prior. p = paired Wilcoxon method vs prior, UNADJUSTED ===
+
+-- pointing r=0 (exact peak)
+method     n                mean [CI]   median  prior mean  diff vs prior        p   chance
+GC3       35   0.000 [0.000, 0.000]    0.000       0.000          0.000      nan    0.019
+GC4       35   0.029 [0.000, 0.086]    0.000       0.000          0.029    0.317    0.019
+IG_zero   35   0.029 [0.000, 0.086]    0.000       0.000          0.029    0.317    0.019
+IG_u      35   0.000 [0.000, 0.000]    0.000       0.057         -0.057    0.157    0.019
+IG_bl     35   0.057 [0.000, 0.143]    0.000       0.000          0.057    0.157    0.019
+IG_neg    35   0.143 [0.029, 0.257]    0.000       0.000          0.143    0.025    0.019
+
+-- pointing r=2 (5 mm)
+method     n                mean [CI]   median  prior mean  diff vs prior        p   chance
+GC3       35   0.029 [0.000, 0.086]    0.000       0.000          0.029    0.317    0.056
+GC4       35   0.029 [0.000, 0.086]    0.000       0.029          0.000    1.000    0.056
+IG_zero   35   0.029 [0.000, 0.086]    0.000       0.057         -0.029    0.564    0.056
+IG_u      35   0.000 [0.000, 0.000]    0.000       0.057         -0.057    0.157    0.056
+IG_bl     35   0.171 [0.057, 0.314]    0.000       0.057          0.114    0.157    0.056
+IG_neg    35   0.171 [0.057, 0.314]    0.000       0.057          0.114    0.157    0.056
+
+-- pointing r=4 (10 mm)
+method     n                mean [CI]   median  prior mean  diff vs prior        p   chance
+GC3       35   0.057 [0.000, 0.143]    0.000       0.086         -0.029    0.564    0.109
+GC4       35   0.057 [0.000, 0.143]    0.000       0.029          0.029    0.317    0.109
+IG_zero   35   0.057 [0.000, 0.143]    0.000       0.057          0.000    1.000    0.109
+IG_u      35   0.029 [0.000, 0.086]    0.000       0.171         -0.143    0.059    0.109
+IG_bl     35   0.171 [0.057, 0.314]    0.000       0.114          0.057    0.480    0.109
+IG_neg    35   0.200 [0.086, 0.343]    0.000       0.114          0.086    0.257    0.109
+
+-- energy ratio (1 = chance)
+method     n                mean [CI]   median  prior mean  diff vs prior        p
+GC3       35   1.030 [0.735, 1.380]    0.748       0.894          0.136    0.790
+GC4       35   0.900 [0.699, 1.102]    0.849       0.909         -0.010    0.633
+IG_zero   35   0.915 [0.750, 1.090]    0.849       0.992         -0.077    0.273
+IG_u      35   0.570 [0.419, 0.756]    0.440       1.021         -0.451    0.000
+IG_bl     35   1.794 [1.397, 2.218]    1.336       1.034          0.760    0.004
+IG_neg    35   1.552 [1.175, 2.015]    1.109       1.000          0.552    0.049
+
+-- voxel contrast d
+method     n                mean [CI]   median  prior mean  diff vs prior        p
+GC3       35   0.013 [-0.168, 0.221]   -0.147      -0.094          0.107    0.135
+GC4       35  -0.104 [-0.346, 0.137]   -0.170      -0.136          0.032    0.351
+IG_zero   35  -0.044 [-0.125, 0.042]   -0.086      -0.024         -0.020    0.680
+IG_u      35  -0.173 [-0.232, -0.099]   -0.236       0.057         -0.230    0.015
+IG_bl     35   0.331 [0.166, 0.508]    0.152       0.151          0.179    0.225
+IG_neg    35   0.220 [0.070, 0.400]    0.045       0.015          0.205    0.351
+
+-- Dice, top-N (N = lesion voxels)
+method     n                mean [CI]   median  prior mean  diff vs prior        p   chance
+GC3       35   0.012 [0.002, 0.025]    0.000       0.013         -0.001    0.657    0.019
+GC4       35   0.020 [0.004, 0.043]    0.000       0.013          0.008    0.260    0.019
+IG_zero   35   0.013 [0.003, 0.025]    0.000       0.013         -0.000    0.609    0.019
+IG_u      35   0.014 [0.002, 0.029]    0.000       0.021         -0.007    0.093    0.019
+IG_bl     35   0.033 [0.019, 0.049]    0.013       0.021          0.012    0.123    0.019
+IG_neg    35   0.046 [0.020, 0.076]    0.007       0.015          0.032    0.027    0.019
+
+-- Dice, top 5 % of head
+method     n                mean [CI]   median  prior mean  diff vs prior        p   chance
+GC3       35   0.013 [0.005, 0.022]    0.000       0.010          0.003    0.744    0.019
+GC4       35   0.014 [0.003, 0.029]    0.000       0.015         -0.001    0.245    0.019
+IG_zero   35   0.011 [0.005, 0.019]    0.002       0.012         -0.000    0.775    0.019
+IG_u      35   0.011 [0.003, 0.022]    0.000       0.019         -0.008    0.019    0.019
+IG_bl     35   0.029 [0.017, 0.043]    0.012       0.020          0.009    0.042    0.019
+IG_neg    35   0.043 [0.020, 0.070]    0.009       0.013          0.030    0.038    0.019
+
+-- block AUC (lesion vs other blocks)
+method     n                mean [CI]   median  prior mean  diff vs prior        p
+GC3       35   0.533 [0.472, 0.596]    0.519       0.485          0.048    0.043
+GC4       35   0.464 [0.392, 0.536]    0.499       0.457          0.007    0.413
+IG_zero   35   0.499 [0.451, 0.548]    0.498       0.522         -0.023    0.369
+IG_u      35   0.522 [0.471, 0.573]    0.517       0.496          0.026    0.115
+IG_bl     35   0.536 [0.495, 0.574]    0.546       0.537         -0.001    0.878
+IG_neg    35   0.561 [0.516, 0.605]    0.565       0.494          0.067    0.022
+
+=== IG BASELINES compared (paired over the same positives): Friedman test, then pairwise Wilcoxon (unadjusted) ===
+
+energy_ratio: n = 35, Friedman p = 0.000
+   IG_zero  - IG_u    : mean diff   0.345   p = 0.000
+   IG_zero  - IG_bl   : mean diff  -0.879   p = 0.000
+   IG_zero  - IG_neg  : mean diff  -0.637   p = 0.000
+   IG_u     - IG_bl   : mean diff  -1.223   p = 0.000
+   IG_u     - IG_neg  : mean diff  -0.982   p = 0.000
+   IG_bl    - IG_neg  : mean diff   0.242   p = 0.127
+
+dice: n = 35, Friedman p = 0.000
+   IG_zero  - IG_u    : mean diff  -0.001   p = 0.609
+   IG_zero  - IG_bl   : mean diff  -0.020   p = 0.000
+   IG_zero  - IG_neg  : mean diff  -0.033   p = 0.000
+   IG_u     - IG_bl   : mean diff  -0.019   p = 0.000
+   IG_u     - IG_neg  : mean diff  -0.032   p = 0.000
+   IG_bl    - IG_neg  : mean diff  -0.013   p = 0.313
+
+block_auc: n = 35, Friedman p = 0.165
+   IG_zero  - IG_u    : mean diff  -0.023   p = 0.704
+   IG_zero  - IG_bl   : mean diff  -0.037   p = 0.491
+   IG_zero  - IG_neg  : mean diff  -0.062   p = 0.073
+   IG_u     - IG_bl   : mean diff  -0.014   p = 0.184
+   IG_u     - IG_neg  : mean diff  -0.038   p = 0.044
+   IG_bl    - IG_neg  : mean diff  -0.025   p = 0.302
+
+point2: n = 35, Friedman p = 0.011
+   IG_zero  - IG_u    : mean diff   0.029   p = 0.317
+   IG_zero  - IG_bl   : mean diff  -0.143   p = 0.059
+   IG_zero  - IG_neg  : mean diff  -0.143   p = 0.025
+   IG_u     - IG_bl   : mean diff  -0.171   p = 0.014
+   IG_u     - IG_neg  : mean diff  -0.171   p = 0.014
+   IG_bl    - IG_neg  : mean diff   0.000   p = 1.000
+
+=== SENSITIVITY: lesion >= 90 % inside head (n = 32 positives); mean energy ratio / Dice / point2 ===
+   GC3      energy 1.08  dice 0.013  point2 0.03
+   GC4      energy 0.94  dice 0.022  point2 0.03
+   IG_zero  energy 0.96  dice 0.014  point2 0.03
+   IG_u     energy 0.60  dice 0.015  point2 0.00
+   IG_bl    energy 1.89  dice 0.034  point2 0.16
+   IG_neg   energy 1.61  dice 0.047  point2 0.16
+
+=== LESION SIZE: Spearman(metric, lesion share of head) and metric by size tertile (small / mid / large) ===
+   dice         GC3      rho   0.69   S 0.000  M 0.002  L 0.033
+   dice         GC4      rho   0.51   S 0.000  M 0.040  L 0.023
+   dice         IG_zero  rho   0.77   S 0.000  M 0.004  L 0.034
+   dice         IG_u     rho   0.65   S 0.000  M 0.001  L 0.040
+   dice         IG_bl    rho   0.73   S 0.001  M 0.029  L 0.069
+   dice         IG_neg   rho   0.84   S 0.000  M 0.019  L 0.117
+   energy_ratio GC3      rho   0.14   S 1.259  M 0.884  L 0.936
+   energy_ratio GC4      rho   0.04   S 0.898  M 1.069  L 0.747
+   energy_ratio IG_zero  rho  -0.17   S 1.026  M 0.939  L 0.782
+   energy_ratio IG_u     rho   0.20   S 0.466  M 0.552  L 0.692
+   energy_ratio IG_bl    rho  -0.34   S 2.306  M 1.790  L 1.285
+   energy_ratio IG_neg   rho   0.27   S 1.211  M 1.378  L 2.052
+   point2       GC3      rho   0.08   S 0.000  M 0.091  L 0.000
+   point2       GC4      rho   0.25   S 0.000  M 0.000  L 0.083
+   point2       IG_zero  rho   0.27   S 0.000  M 0.000  L 0.083
+   point2       IG_u     rho    nan   S 0.000  M 0.000  L 0.000
+   point2       IG_bl    rho   0.36   S 0.000  M 0.182  L 0.333
+   point2       IG_neg   rho   0.47   S 0.000  M 0.182  L 0.333
+
+Reading: values are against the same-case chance level (analytic) and against the method's own location-only prior. 35 positives, p-values unadjusted. Positives with lesions outside the brain mask were removed upstream (selection toward fewer skull-adjacent SDH/EDH); Dice depends strongly on lesion size.

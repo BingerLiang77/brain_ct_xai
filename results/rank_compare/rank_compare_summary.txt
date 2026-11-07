@@ -1,0 +1,114 @@
+35 positives. Medians over cases [IQR]. A top set holds k % of the head voxels of the eligible blocks. 'all' = every eligible block (reference).
+
+=== 1. OVERLAP of the top-k % blocks, mean-ranked vs max-ranked (chance = expected overlap of two unrelated rankings) ===
+method    k %              overlap              jaccard  chance
+IG_zero     5    0.22 [0.12, 0.30]    0.12 [0.07, 0.18]    0.04
+IG_zero    10    0.29 [0.22, 0.33]    0.17 [0.12, 0.20]    0.08
+IG_zero    20    0.38 [0.32, 0.41]    0.24 [0.20, 0.27]    0.16
+IG_zero    30    0.42 [0.38, 0.44]    0.29 [0.25, 0.30]    0.25
+IG_zero    50    0.47 [0.45, 0.49]    0.34 [0.33, 0.36]    0.42
+IG_u        5    0.30 [0.22, 0.38]    0.18 [0.12, 0.23]    0.04
+IG_u       10    0.33 [0.28, 0.39]    0.20 [0.16, 0.24]    0.08
+IG_u       20    0.40 [0.36, 0.44]    0.26 [0.23, 0.29]    0.16
+IG_u       30    0.42 [0.38, 0.44]    0.28 [0.25, 0.30]    0.25
+IG_u       50    0.43 [0.42, 0.46]    0.32 [0.30, 0.34]    0.41
+IG_bl       5    0.15 [0.07, 0.21]    0.10 [0.05, 0.14]    0.04
+IG_bl      10    0.15 [0.12, 0.21]    0.10 [0.07, 0.14]    0.08
+IG_bl      20    0.22 [0.19, 0.28]    0.14 [0.12, 0.18]    0.17
+IG_bl      30    0.30 [0.26, 0.34]    0.20 [0.17, 0.23]    0.25
+IG_bl      50    0.48 [0.44, 0.51]    0.34 [0.32, 0.37]    0.44
+IG_neg      5    0.25 [0.17, 0.33]    0.15 [0.10, 0.22]    0.04
+IG_neg     10    0.24 [0.19, 0.31]    0.16 [0.12, 0.21]    0.08
+IG_neg     20    0.30 [0.24, 0.33]    0.19 [0.16, 0.22]    0.17
+IG_neg     30    0.35 [0.30, 0.39]    0.24 [0.20, 0.27]    0.25
+IG_neg     50    0.47 [0.44, 0.50]    0.35 [0.31, 0.36]    0.43
+
+Spearman rho between the mean score and the max score over all eligible blocks (one value per case):
+   IG_zero  0.17 [0.13, 0.20]
+   IG_u     0.09 [0.05, 0.12]
+   IG_bl    0.11 [0.07, 0.17]
+   IG_neg   0.14 [0.11, 0.19]
+
+=== 2. NEGATIVE CONTENT inside the top-10 % blocks:  mean-ranked | max-ranked | all eligible blocks ===
+
+-- neg_vox: share of voxels with attribution < 0
+   IG_zero   0.440 |  0.499 |  0.501    max - mean (paired, median) +0.059
+   IG_u      0.441 |  0.491 |  0.494    max - mean (paired, median) +0.052
+   IG_bl     0.447 |  0.506 |  0.499    max - mean (paired, median) +0.059
+   IG_neg    0.440 |  0.498 |  0.495    max - mean (paired, median) +0.058
+
+-- mat_neg: share of voxels < -5 % of the case's largest |attribution|
+   IG_zero   0.233 |  0.334 |  0.188    max - mean (paired, median) +0.107
+   IG_u      0.169 |  0.273 |  0.107    max - mean (paired, median) +0.106
+   IG_bl     0.062 |  0.126 |  0.070    max - mean (paired, median) +0.067
+   IG_neg    0.106 |  0.195 |  0.097    max - mean (paired, median) +0.087
+
+-- mat_pos: share of voxels > +5 % of it
+   IG_zero   0.333 |  0.347 |  0.192    max - mean (paired, median) +0.011
+   IG_u      0.253 |  0.281 |  0.105    max - mean (paired, median) +0.028
+   IG_bl     0.097 |  0.126 |  0.066    max - mean (paired, median) +0.027
+   IG_neg    0.178 |  0.198 |  0.099    max - mean (paired, median) +0.025
+
+-- neg_mass: negative / (negative + positive) attribution
+   IG_zero   0.399 |  0.488 |  0.499    max - mean (paired, median) +0.089
+   IG_u      0.397 |  0.487 |  0.499    max - mean (paired, median) +0.091
+   IG_bl     0.387 |  0.494 |  0.503    max - mean (paired, median) +0.105
+   IG_neg    0.386 |  0.484 |  0.494    max - mean (paired, median) +0.093
+
+-- net_gross: (positive - negative) / (positive + negative)
+   IG_zero   0.201 |  0.024 |  0.001    max - mean (paired, median) -0.178
+   IG_u      0.207 |  0.026 |  0.003    max - mean (paired, median) -0.181
+   IG_bl     0.226 |  0.011 | -0.007    max - mean (paired, median) -0.210
+   IG_neg    0.229 |  0.031 |  0.013    max - mean (paired, median) -0.186
+
+-- peak_ratio: median |most negative voxel| / largest positive voxel, per block
+   IG_zero   0.802 |  0.885 |  1.029    max - mean (paired, median) +0.054
+   IG_u      0.735 |  0.840 |  0.958    max - mean (paired, median) +0.090
+   IG_bl     0.710 |  0.714 |  0.997    max - mean (paired, median) -0.018
+   IG_neg    0.712 |  0.744 |  0.974    max - mean (paired, median) +0.049
+
+=== 2. NEGATIVE CONTENT inside the top-30 % blocks:  mean-ranked | max-ranked | all eligible blocks ===
+
+-- neg_vox: share of voxels with attribution < 0
+   IG_zero   0.449 |  0.496 |  0.501    max - mean (paired, median) +0.046
+   IG_u      0.454 |  0.494 |  0.494    max - mean (paired, median) +0.040
+   IG_bl     0.462 |  0.503 |  0.499    max - mean (paired, median) +0.039
+   IG_neg    0.455 |  0.497 |  0.495    max - mean (paired, median) +0.039
+
+-- mat_neg: share of voxels < -5 % of the case's largest |attribution|
+   IG_zero   0.194 |  0.295 |  0.188    max - mean (paired, median) +0.100
+   IG_u      0.120 |  0.224 |  0.107    max - mean (paired, median) +0.107
+   IG_bl     0.057 |  0.111 |  0.070    max - mean (paired, median) +0.049
+   IG_neg    0.088 |  0.160 |  0.097    max - mean (paired, median) +0.070
+
+-- mat_pos: share of voxels > +5 % of it
+   IG_zero   0.261 |  0.306 |  0.192    max - mean (paired, median) +0.047
+   IG_u      0.164 |  0.226 |  0.105    max - mean (paired, median) +0.065
+   IG_bl     0.080 |  0.110 |  0.066    max - mean (paired, median) +0.024
+   IG_neg    0.135 |  0.171 |  0.099    max - mean (paired, median) +0.034
+
+-- neg_mass: negative / (negative + positive) attribution
+   IG_zero   0.424 |  0.488 |  0.499    max - mean (paired, median) +0.064
+   IG_u      0.415 |  0.494 |  0.499    max - mean (paired, median) +0.077
+   IG_bl     0.427 |  0.497 |  0.503    max - mean (paired, median) +0.070
+   IG_neg    0.411 |  0.490 |  0.494    max - mean (paired, median) +0.073
+
+-- net_gross: (positive - negative) / (positive + negative)
+   IG_zero   0.151 |  0.024 |  0.001    max - mean (paired, median) -0.127
+   IG_u      0.170 |  0.013 |  0.003    max - mean (paired, median) -0.154
+   IG_bl     0.147 |  0.006 | -0.007    max - mean (paired, median) -0.140
+   IG_neg    0.178 |  0.020 |  0.013    max - mean (paired, median) -0.145
+
+-- peak_ratio: median |most negative voxel| / largest positive voxel, per block
+   IG_zero   0.860 |  0.938 |  1.029    max - mean (paired, median) +0.061
+   IG_u      0.755 |  0.884 |  0.958    max - mean (paired, median) +0.125
+   IG_bl     0.821 |  0.780 |  0.997    max - mean (paired, median) -0.013
+   IG_neg    0.772 |  0.826 |  0.974    max - mean (paired, median) +0.073
+
+=== 3. OTHER DIFFERENCES of the top-10 % blocks: head fraction | HU | lesion-block share  (mean-ranked | max-ranked);  lesion base rate ===
+   IG_zero  headfrac   1.00 | 1.00   HU   30.57 | 29.88   lesion   0.07 | 0.00   base 0.071
+   IG_u     headfrac   1.00 | 1.00   HU   28.48 | 27.50   lesion   0.05 | 0.00   base 0.071
+   IG_bl    headfrac   0.79 | 1.00   HU   37.42 | 29.72   lesion   0.07 | 0.10   base 0.071
+   IG_neg   headfrac   0.98 | 1.00   HU   34.70 | 28.22   lesion   0.09 | 0.05   base 0.071
+
+Reading: a larger negative share / neg mass / lower net-gross in the max column means the max ranking selects blocks whose strong positive peak sits next to strong negative attribution (cancelling); peak ratio > 1 means the block's strongest voxel is negative. Compare the max column with the 'all' reference, not only with the mean column.

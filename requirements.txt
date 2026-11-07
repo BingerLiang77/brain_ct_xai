@@ -1,14 +1,24 @@
-# Core deep learning and scientific computation
-torch>=2.0.0
-numpy>=1.24.0
-pandas>=2.0.0
-scipy>=1.10.0
-scikit-learn>=1.2.0
-matplotlib>=3.7.0
+# Pinned versions of the local training environment (/Users/bingerliang/antigravity_projects/pancreas_ctfm_xai/.venv)
+#
+# NOTE FOR GOOGLE COLAB:
+# Do NOT run `pip install -r requirements.txt` on Google Colab, as reinstalling torch can break
+# CUDA driver compatibility. The Colab analyses ran on a free Colab T4 using Colab's default torch
+# plus unpinned supplementary libraries:
+#   pip -q install monai lighter_zoo safetensors scikit-learn pandas
 
-# Encoder model support (CT-FM backbone)
-# The codebase uses lighter_zoo for the verified CT-FM SegResEncoder weights.
-# A fallback path is provided using MONAI SegResEncoder with safetensors.
-monai>=1.3.0
-safetensors>=0.4.0
-# lighter_zoo  # Optional / primary CT-FM loader if available
+# Core deep learning and scientific computation
+torch==2.14.1
+numpy==2.4.6
+pandas==3.0.6
+scipy==1.17.1
+scikit-learn==1.9.1
+matplotlib==3.11.2
+
+# Neuroimaging, preprocessing, and utilities
+monai==1.6.1
+nibabel==5.4.2
+tqdm==4.70.1
+
+# CT-FM encoder model support
+lighter-zoo==0.1.3
+safetensors==0.8.0

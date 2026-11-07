@@ -1,0 +1,19 @@
+# ---- Cell 1: GPU + Drive + data (run once per session)
+from google.colab import drive; drive.mount('/content/drive')
+!nvidia-smi -L
+!pip -q install monai lighter_zoo safetensors scikit-learn pandas
+!cp /content/drive/MyDrive/segcls_pack.zip /content/ && cd /content && unzip -q segcls_pack.zip && ls /content/segcls_pack
+# if the zip unpacks to /content/segcls_pack/segcls_pack, set PACK accordingly
+PACK = '/content/segcls_pack'
+!mkdir -p /content/drive/MyDrive/segcls_code    # put segcls_model.py segcls_data.py segcls_train.py segcls_eval.py here (upload via Drive)
+%cd /content/drive/MyDrive/segcls_code
+
+# ---- Cell 2: smoke test (2 epochs on a few cases, ~2-3 min). Look at step time and the d<score>/dx lines (must be non-zero)
+!python segcls_train.py --pack {PACK} --out /content/smoke --smoke --workers 2
+
+# ---- Cell 3: full training (resumable; if the session dies, run Cell 1 then this cell again)
+!python segcls_train.py --pack {PACK} --out /content/drive/MyDrive/segcls_run1 --epochs 40 --workers 2
+
+# ---- Cell 4: evaluation (val picks the pooling, then test)
+!python segcls_eval.py --pack {PACK} --ckpt /content/drive/MyDrive/segcls_run1/best_auc.pt --out /content/drive/MyDrive/segcls_run1/eval_best_auc
+!python segcls_eval.py --pack {PACK} --ckpt /content/drive/MyDrive/segcls_run1/best_dice.pt --out /content/drive/MyDrive/segcls_run1/eval_best_dice

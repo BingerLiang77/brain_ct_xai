@@ -1,0 +1,14 @@
+# Core deep learning and scientific computation
+torch>=2.0.0
+numpy>=1.24.0
+pandas>=2.0.0
+scipy>=1.10.0
+scikit-learn>=1.2.0
+matplotlib>=3.7.0
+
+# Encoder model support (CT-FM backbone)
+# The codebase uses lighter_zoo for the verified CT-FM SegResEncoder weights.
+# A fallback path is provided using MONAI SegResEncoder with safetensors.
+monai>=1.3.0
+safetensors>=0.4.0
+# lighter_zoo  # Optional / primary CT-FM loader if available

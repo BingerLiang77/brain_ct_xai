@@ -1,0 +1,81 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# macOS and OS specific files
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+
+# Large artifacts, weights, and caches (Strict Exclusion)
+*.pt
+*.pth
+*.bin
+*.safetensors
+*.ckpt
+checkpoints/
+
+# Raw and preprocessed medical imaging data
+*.nii
+*.nii.gz
+*.npy
+*.npz
+data/
+cases/
+segcls_pack/
+segcls_pack.zip
+*.tar
+*.tar.gz
+*.zip
+
+# Intermediate attribution / faith case tensors
+attributions/
+faith_cases/
+held_back_per_case_csvs/
+
+# Logs
+*.log

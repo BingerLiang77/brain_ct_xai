@@ -115,6 +115,33 @@ wget -O /content/segcls_pack.zip https://github.com/BingerLiang77/brain_ct_xai/r
 cd /content && unzip -q segcls_pack.zip
 ```
 
+## Required Data & Weights (not stored in this repository)
+
+Model weights, preprocessed CT tensors and reference outputs are **not** in git (see `.gitignore`; the raw BHSD CT data is not redistributed here). Everything needed to use the trained model and re-run the XAI analyses is in the release asset `segcls_pack.zip` (~739 MB, SHA-256 `45660e617f48f3da4ad14230d4b64099577a81a9aa794c37fdeb896ceb06a55a`):
+
+```text
+segcls_pack/
+├── cohort.csv               # 1,132 cases, labels, train/test split, folds
+├── data/cases/<id>.pt       # preprocessed tensors (x, brain, head, lesion, meta)
+├── weights/                 # frozen CT-FM encoder + trained masked-pooling linear head
+└── ref/                     # reference predictions and summaries
+```
+
+**Without the pack, none of the scripts in `src/colab/` or `verify_pack.py` can run.** `src/project/` (cohort building, caching, retraining from raw NIfTI) additionally needs the raw BHSD CTs, which you must obtain yourself; it is not needed for using the model or the XAI analyses.
+
+### Local quick-start (CPU/MPS/CUDA)
+
+```bash
+git clone https://github.com/BingerLiang77/brain_ct_xai.git && cd brain_ct_xai
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt            # if a pinned version is unavailable, relax the pins
+wget https://github.com/BingerLiang77/brain_ct_xai/releases/latest/download/segcls_pack.zip
+unzip -q segcls_pack.zip                   # creates ./segcls_pack
+python src/project/verify_pack.py --pack segcls_pack --device cpu   # ~11 min on CPU; expects PASS
+```
+
+The XAI steps (`src/colab/maskpool_xai.py`, `mpool_loc.py`, `mpool_faith.py`, `mpool_stage_decomp.py`, `mpool_rank_compare.py`) take `--pack segcls_pack` and are listed in order in [`notebooks/colab_cells.txt`](notebooks/colab_cells.txt). They were developed for a CUDA GPU (Colab T4); only `verify_pack.py` has been re-tested on CPU.
+
 For technical details on input volume preprocessing and parameters, see [`docs/methods.md`](docs/methods.md).
 
 ## Summary of Findings

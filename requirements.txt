@@ -1,4 +1,4 @@
-# Pinned versions of the local training environment (/Users/bingerliang/antigravity_projects/pancreas_ctfm_xai/.venv)
+# Pinned versions of the local (non-Colab) environment used for training and verification.
 #
 # NOTE FOR GOOGLE COLAB:
 # Do NOT run `pip install -r requirements.txt` on Google Colab, as reinstalling torch can break

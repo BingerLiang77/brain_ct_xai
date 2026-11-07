@@ -1,19 +1,43 @@
 # ---- Cell 1: GPU + Drive + data (run once per session)
 from google.colab import drive; drive.mount('/content/drive')
 !nvidia-smi -L
-!pip -q install monai lighter_zoo safetensors scikit-learn pandas
-!cp /content/drive/MyDrive/segcls_pack.zip /content/ && cd /content && unzip -q segcls_pack.zip && ls /content/segcls_pack
-# if the zip unpacks to /content/segcls_pack/segcls_pack, set PACK accordingly
-PACK = '/content/segcls_pack'
-!mkdir -p /content/drive/MyDrive/segcls_code    # put segcls_model.py segcls_data.py segcls_train.py segcls_eval.py here (upload via Drive)
-%cd /content/drive/MyDrive/segcls_code
+!pip -q install monai lighter_zoo safetensors scikit-learn pandas scipy matplotlib
 
-# ---- Cell 2: smoke test (2 epochs on a few cases, ~2-3 min). Look at step time and the d<score>/dx lines (must be non-zero)
+# Unpack data package
+!cp /content/drive/MyDrive/segcls_pack.zip /content/ && cd /content && unzip -q segcls_pack.zip && ls /content/segcls_pack
+PACK = '/content/segcls_pack'
+
+# Clone repository or set code directory
+!git clone https://github.com/BingerLiang77/brain_ct_xai.git /content/brain_ct_xai
+%cd /content/brain_ct_xai/src/colab
+import sys; sys.path.insert(0, '/content/brain_ct_xai/src/colab')
+
+# ---- Cell 2: Verify pack integrity against reference predictions
+!python /content/brain_ct_xai/src/project/verify_pack.py --pack {PACK} --device cuda
+
+# ---- Cell 3: SegCls Decoder Training (smoke test)
 !python segcls_train.py --pack {PACK} --out /content/smoke --smoke --workers 2
 
-# ---- Cell 3: full training (resumable; if the session dies, run Cell 1 then this cell again)
+# ---- Cell 4: Full Decoder Training (resumable)
 !python segcls_train.py --pack {PACK} --out /content/drive/MyDrive/segcls_run1 --epochs 40 --workers 2
 
-# ---- Cell 4: evaluation (val picks the pooling, then test)
+# ---- Cell 5: Model Evaluation across pooling choices
 !python segcls_eval.py --pack {PACK} --ckpt /content/drive/MyDrive/segcls_run1/best_auc.pt --out /content/drive/MyDrive/segcls_run1/eval_best_auc
 !python segcls_eval.py --pack {PACK} --ckpt /content/drive/MyDrive/segcls_run1/best_dice.pt --out /content/drive/MyDrive/segcls_run1/eval_best_dice
+
+# ---- Cell 6: Masked-Pooling Model XAI - Attribution Generation (Grad-CAM + 4 IG baselines)
+!python maskpool_xai.py validate --pack {PACK} --out /content/drive/MyDrive/segcls_run1/mpool_val
+!python maskpool_xai.py attr --pack {PACK} --out /content/drive/MyDrive/segcls_run1/mpool_attr --steps 64
+
+# ---- Cell 7: Localisation Benchmarking (Pointing game, Top-N Dice, Energy ratio)
+!python mpool_loc.py --pack {PACK} --attr /content/drive/MyDrive/segcls_run1/mpool_attr --out /content/drive/MyDrive/segcls_run1/mpool_loc
+
+# ---- Cell 8: Faithfulness Evaluation (Deletion / Insertion curves, Random & Compact-random controls)
+!python mpool_faith.py run --pack {PACK} --attr /content/drive/MyDrive/segcls_run1/mpool_attr --out /content/drive/MyDrive/segcls_run1/mpool_faith --controls reverse ball
+!python mpool_faith.py summarize --out /content/drive/MyDrive/segcls_run1/mpool_faith
+
+# ---- Cell 9: Per-Stage Logit Decomposition
+!python mpool_stage_decomp.py --pack {PACK} --out /content/drive/MyDrive/segcls_run1/mpool_stage_decomp
+
+# ---- Cell 10: Mean-vs-Max Block-Ranking Comparison
+!python mpool_rank_compare.py --pack {PACK} --attr /content/drive/MyDrive/segcls_run1/mpool_attr --out /content/drive/MyDrive/segcls_run1/mpool_rank_compare

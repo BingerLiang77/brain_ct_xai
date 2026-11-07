@@ -4,8 +4,9 @@ Resumable: every epoch writes last.pt to --out (put --out on Google Drive).  Re-
   python segcls_train.py --pack /content/segcls_pack --out /content/drive/MyDrive/segcls_run1
   python segcls_train.py --pack ... --out ... --smoke        # 2 epochs on a handful of cases, plus gradient/resume checks
 """
-import argparse, csv, json, random, time
+import argparse, csv, json, random, sys, time
 from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 import numpy as np
 import torch
 from torch.utils.data import DataLoader

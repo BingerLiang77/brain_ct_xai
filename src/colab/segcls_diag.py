@@ -2,7 +2,9 @@
   python segcls_diag.py --pack PACK --ckpt RUN/best_auc.pt --run RUN --eval RUN/eval_best_auc --ref PACK/ref/test_predictions_maskpool.csv
 """
 import argparse, json
+import sys
 from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 import numpy as np, pandas as pd, torch
 from sklearn.metrics import roc_auc_score
 from scipy.stats import spearmanr

@@ -2,13 +2,14 @@ import os
 import sys
 from pathlib import Path
 
-# Add project src to path
-proj_dir = Path(os.environ.get("PROJECT_DIR", "/path/to/head_ct_ich_ctfm"))
-sys.path.insert(0, str(proj_dir / "src"))
+current_dir = Path(__file__).resolve().parent
+repo_root = current_dir.parents[1]
+sys.path.insert(0, str(current_dir))
 
 import time
 import warnings
 warnings.filterwarnings("ignore")
+import argparse
 import torch
 import nibabel as nib
 import numpy as np
@@ -20,11 +21,10 @@ from dataset import head_roi_slices
 import pandas as pd
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
-coh_path = os.environ.get("COHORT_CSV", "/path/to/segcls_pack/cohort.csv")
-coh = pd.read_csv(coh_path)
-qc_pos = pd.read_csv(proj_dir / "data/brain_mask/positives_192/masks/brainmask_qc.csv").set_index("case")
-out_dir = Path(os.environ.get("CASES_OUT_DIR", "/path/to/segcls_pack/data/cases"))
-out_dir.mkdir(parents=True, exist_ok=True)
+proj_dir = Path(os.environ.get("PROJECT_DIR", str(repo_root)))
+out_dir = Path(os.environ.get("CASES_OUT_DIR", str(proj_dir / "segcls_pack" / "data" / "cases")))
+qc_pos = None
+coh = None
 
 def worker(row_dict):
     cid = row_dict["id"]
@@ -88,11 +88,36 @@ def worker(row_dict):
         return cid, str(e)
 
 def main():
+    global coh, qc_pos, out_dir
+    parser = argparse.ArgumentParser(description="Build packaged case .pt files for segcls_pack")
+    parser.add_argument("--cohort", type=str, default=os.environ.get("COHORT_CSV", str(proj_dir / "data" / "cohort_masked.csv")),
+                        help="Path to cohort_masked.csv or segcls_pack/cohort.csv")
+    parser.add_argument("--qc-pos", type=str, default=os.environ.get("QC_POS_CSV", str(proj_dir / "data" / "brain_mask" / "positives_192" / "masks" / "brainmask_qc.csv")),
+                        help="Path to brainmask_qc.csv for positives")
+    parser.add_argument("--out-dir", type=str, default=os.environ.get("CASES_OUT_DIR", str(proj_dir / "segcls_pack" / "data" / "cases")),
+                        help="Output directory for cases/*.pt")
+    parser.add_argument("--workers", type=int, default=8, help="Number of worker processes")
+    args = parser.parse_args()
+
+    out_dir = Path(args.out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    coh_path = Path(args.cohort)
+    assert coh_path.exists(), f"Cohort file not found: {coh_path}"
+    coh = pd.read_csv(coh_path)
+
+    qc_path = Path(args.qc_pos)
+    if qc_path.exists():
+        qc_pos = pd.read_csv(qc_path).set_index("case")
+    else:
+        print(f"Notice: {qc_path} not found, lesion_in_mask will default to 1.0")
+        qc_pos = None
+
     records = coh.to_dict(orient="records")
-    print(f"Starting processing {len(records)} cases with 8 workers...", flush=True)
+    print(f"Starting processing {len(records)} cases with {args.workers} workers...", flush=True)
     t0 = time.time()
     n_done, n_skipped, n_err = 0, 0, 0
-    with ProcessPoolExecutor(max_workers=8) as ex:
+    with ProcessPoolExecutor(max_workers=args.workers) as ex:
         futures = [ex.submit(worker, r) for r in records]
         for f in as_completed(futures):
             cid, res = f.result()

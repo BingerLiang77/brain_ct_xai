@@ -20,9 +20,11 @@ Usage (needs maskpool_xai.py and mpool_loc.py in the same folder):
 """
 import argparse
 import itertools
+import sys
 import time
 import warnings
 from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import numpy as np
 import pandas as pd

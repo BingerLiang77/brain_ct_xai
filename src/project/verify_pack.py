@@ -56,21 +56,32 @@ class ICHMasked(nn.Module):
 
 def main():
     parser = argparse.ArgumentParser(description="Verify segcls_pack test predictions")
+    parser.add_argument("--pack", type=str, default=None,
+                        help="Path to segcls_pack root directory (default: checks ROOT, PROJECT_ROOT/segcls_pack, or ./segcls_pack)")
     parser.add_argument("--device", type=str, default="cpu", choices=["cpu", "mps", "cuda"],
                         help="Device to run inference on (default: cpu)")
     parser.add_argument("--limit", type=int, default=None,
                         help="Optional limit on number of test cases to verify (default: all 230)")
     args = parser.parse_args()
 
+    if args.pack:
+        pack_root = Path(args.pack).resolve()
+    elif (ROOT / "cohort.csv").exists():
+        pack_root = ROOT
+    elif (ROOT.parents[1] / "segcls_pack" / "cohort.csv").exists():
+        pack_root = (ROOT.parents[1] / "segcls_pack").resolve()
+    else:
+        pack_root = Path("segcls_pack").resolve()
+
     device = torch.device(args.device)
     print("=== SegCls Pack Verification ===")
-    print(f"Pack root : {ROOT}")
+    print(f"Pack root : {pack_root}")
     print(f"Device    : {device}")
 
-    weights_enc = ROOT / "weights" / "ct_fm_feature_extractor"
-    weights_head = ROOT / "weights" / "ich_head_masked_pool_stages_0_1_2_3_4.pt"
-    cohort_file = ROOT / "cohort.csv"
-    ref_file = ROOT / "ref" / "test_predictions_maskpool.csv"
+    weights_enc = pack_root / "weights" / "ct_fm_feature_extractor"
+    weights_head = pack_root / "weights" / "ich_head_masked_pool_stages_0_1_2_3_4.pt"
+    cohort_file = pack_root / "cohort.csv"
+    ref_file = pack_root / "ref" / "test_predictions_maskpool.csv"
 
     for p in (weights_enc, weights_head, cohort_file, ref_file):
         assert p.exists(), f"Missing required file in pack: {p}"
@@ -104,7 +115,7 @@ def main():
     with torch.no_grad():
         for i, (_, r) in enumerate(test_coh.iterrows()):
             cid = r["id"]
-            pt_path = ROOT / "data" / "cases" / f"{cid}.pt"
+            pt_path = pack_root / "data" / "cases" / f"{cid}.pt"
             assert pt_path.exists(), f"Case file missing: {pt_path}"
 
             data = torch.load(pt_path, weights_only=False)

@@ -12,7 +12,9 @@ Target scalar S = case score from the logit map inside the brain mask (default p
   python segcls_xai.py faith   --pack PACK --ckpt RUN/best_auc.pt --out RUN/xai
 """
 import argparse, os, time
+import sys
 from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 import numpy as np, pandas as pd, torch
 import torch.nn.functional as F
 from scipy import ndimage as ndi

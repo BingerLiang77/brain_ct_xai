@@ -4,7 +4,7 @@
 import os
 from pathlib import Path
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DATA_DIR = PROJECT_ROOT / "data"
 CACHE_DIR = DATA_DIR / "cache_roi_pt"      # preprocessed tensors
 FEATURE_DIR = DATA_DIR / "features"        # frozen CT-FM features

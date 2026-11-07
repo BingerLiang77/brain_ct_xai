@@ -19,8 +19,10 @@ Usage:  python mpool_rank_compare.py --pack PACK --attr DIR [DIR2 ...] --out OUT
 Writes OUT/rank_compare_cases.csv, rank_compare.txt, rank_compare.png.
 """
 import argparse
+import sys
 import warnings
 from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import numpy as np
 import pandas as pd

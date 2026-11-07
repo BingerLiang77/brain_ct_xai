@@ -12,7 +12,9 @@ Writes OUT/stage_contrib.csv, OUT/stage_decomp.txt, OUT/stage_decomp.png.   Need
 """
 import argparse
 import warnings
+import sys
 from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import numpy as np
 import pandas as pd

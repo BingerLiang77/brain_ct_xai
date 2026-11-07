@@ -2,7 +2,9 @@
   python segcls_eval.py --pack /content/segcls_pack --ckpt /content/drive/MyDrive/segcls_run1/best_auc.pt --out /content/drive/MyDrive/segcls_run1/eval_best_auc
 """
 import argparse, json
+import sys
 from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 import numpy as np, pandas as pd, torch
 from sklearn.metrics import roc_auc_score, average_precision_score
 from torch.utils.data import DataLoader

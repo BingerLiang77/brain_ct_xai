@@ -3,8 +3,12 @@ from google.colab import drive; drive.mount('/content/drive')
 !nvidia-smi -L
 !pip -q install monai lighter_zoo safetensors scikit-learn pandas scipy matplotlib
 
-# Unpack data package
-!cp /content/drive/MyDrive/segcls_pack.zip /content/ && cd /content && unzip -q segcls_pack.zip && ls /content/segcls_pack
+# Unpack data package (Option A: Direct from GitHub Releases; Option B: from Google Drive)
+# Option A: Direct download from GitHub Releases (recommended)
+!wget -O /content/segcls_pack.zip https://github.com/BingerLiang77/brain_ct_xai/releases/latest/download/segcls_pack.zip
+!cd /content && unzip -q segcls_pack.zip && ls /content/segcls_pack
+# Option B (fallback if already saved on your Google Drive):
+# !cp /content/drive/MyDrive/segcls_pack.zip /content/ && cd /content && unzip -q segcls_pack.zip && ls /content/segcls_pack
 PACK = '/content/segcls_pack'
 
 # Clone repository or set code directory

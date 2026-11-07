@@ -106,7 +106,13 @@ The scripts in `src/colab/` are frozen research artefacts designed to run in a s
 
 Refer to [`notebooks/colab_cells.txt`](notebooks/colab_cells.txt) for the exact end-to-end execution cells. Note that Colab provides PyTorch pre-installed; do **not** run `pip install -r requirements.txt` on Colab (which would overwrite Colab's default torch build). Instead, install only the supplementary packages via:
 ```bash
-pip -q install monai lighter_zoo safetensors scikit-learn pandas
+pip -q install monai lighter_zoo safetensors scikit-learn pandas scipy matplotlib
+```
+
+The preprocessed evaluation cohort and weights package (`segcls_pack.zip`, ~739 MB) can be downloaded directly from [GitHub Releases](https://github.com/BingerLiang77/brain_ct_xai/releases):
+```bash
+wget -O /content/segcls_pack.zip https://github.com/BingerLiang77/brain_ct_xai/releases/latest/download/segcls_pack.zip
+cd /content && unzip -q segcls_pack.zip
 ```
 
 For technical details on input volume preprocessing and parameters, see [`docs/methods.md`](docs/methods.md).

@@ -12,15 +12,16 @@ The project evaluates intracranial haemorrhage (ICH) classification on non-contr
   - **174 positive cases** (confirmed haemorrhage)
   - **958 negative cases** (no haemorrhage)
 - **Data Partitioning**:
-  - **Training Cohort**: 902 scans (split across cross-validation folds)
+  - **Training Cohort**: 902 scans (split across 5 cross-validation folds)
   - **Held-out Test Cohort**: 230 scans (35 positive, 195 negative)
 
 ### Preprocessing & Input Representation
-Each head CT scan is resampled and preprocessed into a fixed 3D tensor:
-- **Dimensions**: $(B, 1, 96, 128, 128)$
-- **Windowing**: Brain window (typically 0–80 HU or 40 HU center / 80 HU width), normalized to $[0, 1]$.
-- **Anatomical Mask**: A binary brain/head mask is computed to isolate intracranial voxels and exclude skull/background air from feature pooling.
-- **Reference Ground Truth**: 3D binary lesion segmentation masks (`lesion`) annotated by radiologists for all positive test cases.
+Each head CT scan is resampled and preprocessed into a fixed 3D tensor stored as a case dictionary:
+- `x`: `torch.float16`, shape $(1, 96, 128, 128)$. Brain window $[-20, 100]\text{ HU}$ normalized linearly to $[0, 1]$; voxels outside the intracranial brain mask are set to $-1000\text{ HU}$ (clips to $0.0$).
+- `head`: `torch.uint8`, shape $(96, 128, 128)$. Binary mask for block eligibility ($x > 0.01$).
+- `brain`: `torch.uint8`, shape $(96, 128, 128)$. Intracranial skull-stripping mask resampled from NIfTI `mask_path`.
+- `lesion`: `torch.uint8`, shape $(96, 128, 128)$. Radiologist-annotated ground truth haemorrhage mask ($1 = \text{haemorrhage}$, all zeros for negatives).
+- `meta`: Metadata dictionary containing `id`, `patient`, `label` ($1$ for positive, $0$ for negative), `split`, `fold` ($0..4$ for training, $-1$ for test), `lesion_vox`, `lesion_ml`, and `lesion_in_mask`.
 
 ---
 
@@ -62,14 +63,14 @@ The classifier leverages a frozen pre-trained 3D foundation model backbone with 
   - Stage 2: 128 channels
   - Stage 3: 256 channels
   - Stage 4: 512 channels
-- **Feature Pooling**: Head-masked average pooling across all 5 encoder stages. Downsampled binary head masks ensure that only intracranial feature representations contribute to the feature vector, eliminating confounding from cranial bones, extracranial soft tissue, or background noise.
-- **Classification Head**: Feature standardisation followed by a linear classification head outputting a differentiable scalar logit.
+- **Feature Pooling**: Head-masked average pooling across all 5 encoder stages ($w = \text{adaptive\_avg\_pool3d}(x > 0.01)$).
+- **Classification Head**: Feature standardisation (`StandardScaler`) followed by a balanced logistic regression head outputting a differentiable scalar logit.
 
 ---
 
 ## 3. Explainability (XAI) Suite
 
-The repository implements a comprehensive explainability benchmark evaluating attribution localisation, faithfulness, structural decomposition, and baseline inductive biases.
+The repository implements an explainability benchmark evaluating attribution localisation, faithfulness, structural decomposition, and baseline inductive biases.
 
 ### 3.1 Attribution Methods & Baselines
 
@@ -78,7 +79,7 @@ The repository implements a comprehensive explainability benchmark evaluating at
 2. **Integrated Gradients (IG)**:
    - Computes path integrals of input gradients along the linear path between a neutral baseline $x'$ and the input volume $x$:
      $$\text{IG}_i(x) = (x_i - x'_i) \times \int_{0}^{1} \frac{\partial F(x' + \alpha(x - x'))}{\partial x_i} \, d\alpha$$
-   - Approximated via a 16-step Riemann summation.
+   - Approximated via Gauss-Legendre quadrature using 24 steps for the diagnostic decoder experiments (`segcls_xai.py`) and 64–128 steps for the masked-pool model (`maskpool_xai.py`). For the zero baseline (`IG_zero`), a power path warp $\alpha = t^4$ with 128 steps is applied to crowd quadrature nodes near $\alpha = 0$ where GroupNorm causes rapid logit shifts.
    - Evaluated across four distinct baselines:
      - **Zero Baseline (`IG_zero`)**: $x' = 0$ (attenuation baseline).
      - **Constant 40 HU Baseline (`IG_u`)**: $x' = \text{const}_{40\text{HU}}$ (healthy brain parenchyma density).
@@ -95,12 +96,14 @@ Evaluated across the 35 positive test cases against expert radiologist lesion gr
   - Exact hitting ($r=0$).
   - Tolerance radii: $r=2$ voxels (5 mm tolerance), $r=4$ voxels (10 mm tolerance).
 - **Attribution AUC-ROC**: Treating positive attributions inside the head mask as a binary classifier for lesion voxels.
-- **Lesion Concentration**: Ratio of mean attribution density inside the true lesion mask relative to the mean attribution density across the whole brain parenchyma.
+- **Lesion Energy Ratio**: Ratio of mean attribution density inside the true lesion mask relative to the mean attribution density across the whole brain parenchyma ($1.0 = \text{chance}$).
+- **Top-N Dice**: Overlap between top-$N$ attributed voxels ($N = \text{lesion voxels}$) and the true lesion.
 
 #### B. Faithfulness Evaluation (`src/colab/mpool_faith.py`)
-Measures whether features identified as important genuinely drive the model's prediction:
-- **Deletion Paradigm**: Progressively replacing the top-$k\%$ attributed blocks ($k \in [0, 100]$ in 5% steps) with neutral replacement values; lower Area Under Curve (AUC) indicates greater faithfulness (faster degradation of positive logit).
-- **Insertion Paradigm**: Progressively restoring top-$k\%$ attributed blocks starting from a replaced baseline; higher AUC indicates greater faithfulness.
+Measures whether features identified as important drive the model's prediction:
+- **Deletion Paradigm**: Progressively replacing the top-$k\%$ attributed blocks ($k \in [0, 100]$ in 5% steps) with neutral replacement values; lower Area Under Curve (AUC) indicates greater drop in logit.
+- **Insertion Paradigm**: Progressively restoring top-$k\%$ attributed blocks starting from a replaced baseline.
+- **Non-Neutral Replacements**: Replacing all eligible blocks gives a mean logit of $+1.77$ (zero), $-1.56$ (const), $+2.15$ (blur), $-1.38$ (negmean), against $+1.05$ for the original scan (`results/faithfulness/faith_summary.txt`).
 - **Block-level Ranking Aggregations**:
   - **Max-ranking**: Blocks ranked by maximum attribution voxel within each block.
   - **Mean-ranking**: Blocks ranked by mean attribution across voxels in each block.
@@ -108,13 +111,13 @@ Measures whether features identified as important genuinely drive the model's pr
 #### C. Per-Stage Logit Decomposition (`src/colab/mpool_stage_decomp.py`)
 Because the linear head linearly combines pooled features from all 5 encoder stages:
 $$\text{logit}(x) = b + \sum_{s=0}^{4} c_s(x)$$
-where $c_s(x) = w_s^T z_s(x)$ represents the exact contribution of encoder stage $s$. This allows quantifying how much decision mass is captured by deep semantic stages (3 & 4) versus shallow textural stages (0, 1 & 2).
+where $c_s(x) = w_s^T z_s(x)$ represents the exact contribution of encoder stage $s$. Stages 0–2 carry 36.2% of positive-vs-negative logit separation, while stages 3–4 carry 63.8% (`results/stage_decomposition/stage_decomp.txt`).
 
 #### D. Mean-vs-Max Block-Ranking Comparison (`src/colab/mpool_rank_compare.py`)
-Investigates attribution cancellation artefacts:
+Investigates attribution cancellation artefacts (`results/rank_compare/rank_compare.txt`):
 - Compares overlap and Jaccard similarity of selected top-$k\%$ blocks between max-ranking and mean-ranking.
-- Measures the presence of strongly negative voxels alongside positive peaks inside max-ranked blocks, which cancel out under spatial pooling.
+- Evaluates sign cancellation in max-ranked blocks where sharp positive peaks sit next to strong negative attribution voxels.
 
 #### E. IG Completeness Axiom Verification (`results/ig_completeness/`)
-Validates that the sum of Integrated Gradients attributions across all voxels strictly equals the difference between the model's output logit and the baseline logit:
+Validates that the sum of Integrated Gradients attributions across all voxels equals the difference between the model's output logit and the baseline logit:
 $$\sum_i \text{IG}_i(x) \approx F(x) - F(x')$$
